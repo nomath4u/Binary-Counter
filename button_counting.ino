@@ -2,10 +2,8 @@
 
 int sum_set = 0;
 int val = 0; //store the state of input pin
-int old_val = 0; //stores previous val
-int state = 0; //0 LED off 1 LED on
-
-void calculate(int, int*);
+int old_val =0;
+void calculate(int);
 
 void setup(){
   int j; //index variable
@@ -26,9 +24,9 @@ void loop(){
        delay(10); //de-bounce
    }
    
-   old_val = val; // val is now old
+   old_val = val; //val is now old
    
-   calculate(sum_set, &sum_set);
+   calculate(sum_set);
    for(j=2; j<=9; j++)
      digitalWrite(j, LOW); //clear lights that may not need to be on
    
@@ -36,39 +34,20 @@ void loop(){
 
 //Determine which lights need to be on
 
-void calculate(int sum, int* sum_set){
-  if(sum == 100)
-    *sum_set = 0;
+void calculate(int sum){
+  int k; // index variable
   
-  if( sum >= 80){
-    digitalWrite (9, HIGH);
-    sum = sum - 80;
-  }
-  if(sum >= 40){
-    digitalWrite (8, HIGH);
-    sum = sum - 40;
-  }
-  if(sum >= 20){
-    digitalWrite (7, HIGH);  
-    sum = sum - 20;
-  }
-  if(sum >= 10){
-    digitalWrite (6, HIGH);
-    sum = sum - 10;
-  }
-  if(sum >= 8){
-    digitalWrite (5, HIGH);
-    sum = sum - 8;
-  }
-  if(sum >= 4){
-    digitalWrite (4, HIGH);
-    sum = sum -4;
-  }
-  if(sum >=2){
-    digitalWrite (3, HIGH);
-    sum = sum - 2;
-  }
-  if(sum == 1){
-    digitalWrite (2, HIGH);
+  int led_calc[9] = {100, 80, 40, 20, 10, 8, 4, 2 ,1};// array for
+                                                     // led place
+                                                     // value
+  
+  if(sum == led_calc[0]) //reset once we get to 100
+    sum_set = 0;
+  
+  for(k=1; k<=8; k++){
+    if( sum >= led_calc[k]){
+      digitalWrite (9-(k-1), HIGH);
+      sum = sum - led_calc[k];
+    }
   }
 }
